@@ -1,0 +1,8 @@
+---
+description: Pandas / NumPy / Polars vectorization. No Python row loops over DataFrames.
+alwaysApply: false
+---
+- NEVER use `df.iterrows()`, `df.itertuples()`, `df.apply(axis=1)` with a Python lambda, or `.iloc[i]` row loops — they collapse C-level performance.
+- ALWAYS prefer (in order): vectorized NumPy/Pandas/PyArrow ops → `df.assign(...)` chains → `groupby().agg()`/`transform()`/`pipe()` → `np.where`/`np.select`/`pd.cut` → Polars `pl.col(...).when().then()`.
+- IF a row-wise Python op is unavoidable, isolate it in a helper and comment why no vectorized path exists.
+- BAD `for i,row in df.iterrows(): df.at[i,"s"]=row["a"]*row["b"]`. GOOD `df = df.assign(s=lambda d: d["a"]*d["b"])`.

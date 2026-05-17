@@ -1,0 +1,12 @@
+---
+description: GitHub Actions baseline — SHA-pinned actions, OIDC, least-privilege.
+globs: .github/workflows/**/*.yml,.github/workflows/**/*.yaml
+alwaysApply: false
+---
+
+- ALWAYS pin actions to a 40-char SHA: `uses: actions/checkout@<sha>  # v4.1.7`.
+- ALWAYS set `permissions:` to least-privilege (default `permissions: { contents: read }`, elevate per-job).
+- ALWAYS use OIDC for cloud auth — NEVER long-lived static cloud keys in CI.
+- NEVER `echo` a secret; mark derived outputs with `::add-mask::`.
+- ALWAYS set `concurrency:` and `timeout-minutes:` on long-running jobs.
+- NEVER `pull_request_target` with checkout of PR code unless you understand the supply-chain risk.

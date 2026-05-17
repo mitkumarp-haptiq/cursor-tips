@@ -1,0 +1,10 @@
+---
+description: Dockerfile guidelines — pinned minimal base, multi-stage, non-root.
+globs: **/Dockerfile,**/Dockerfile.*,**/*.dockerfile,**/Containerfile
+alwaysApply: false
+---
+
+- Pin base images to a digest (`@sha256:...`) for prod; prefer minimal (`-slim`, distroless, chainguard, ubi-minimal). NEVER `:latest` or `FROM ubuntu` for app runtime.
+- Multi-stage build: `FROM ... AS builder` → final stage copies only the artifact + runtime deps. Cache: lockfile → install → source.
+- NEVER `apt-get upgrade`; use `apt-get install --no-install-recommends` and clean `/var/lib/apt/lists/*` in the same `RUN`. NEVER `COPY . .` without a `.dockerignore` excluding `.git`, `.env`, `node_modules`, `__pycache__`.
+- Final image MUST run as non-root (`USER <name>`). Set `WORKDIR`. Use exec-form `ENTRYPOINT ["..."]` so SIGTERM reaches the process. Add `HEALTHCHECK` for long-running services.

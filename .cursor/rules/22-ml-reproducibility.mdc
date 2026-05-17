@@ -1,0 +1,10 @@
+---
+description: Global seed initialization and ML data hygiene.
+alwaysApply: false
+---
+- ALWAYS seed ONCE at script entry, before any model/dataloader: `PYTHONHASHSEED`, `random.seed`, `np.random.seed`, `torch.manual_seed` + `torch.cuda.manual_seed_all`, `cudnn.deterministic=True`, `cudnn.benchmark=False`.
+- NEVER seed per-batch/per-epoch. Pass `generator=torch.Generator().manual_seed(s)` to DataLoaders.
+- ALWAYS log seed, dataset hash, git SHA, package + CUDA/cuDNN versions.
+- NEVER fit scalers/encoders/imputers on the full set before split — fit on TRAIN only, transform val/test.
+- NEVER leak the target into features (post-event timestamps, full-set target encoding).
+- ALWAYS persist preprocessing artifacts (scaler, vocab, label-map) with the checkpoint at the same version tag.

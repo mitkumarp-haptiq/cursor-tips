@@ -1,0 +1,10 @@
+---
+description: Meta operating principles. Always-applied behavioral compact.
+alwaysApply: true
+---
+
+- SMALL, REVERSIBLE diffs. Never refactor unrelated code in the same change.
+- Never delete or weaken tests to make them pass — fix the root cause.
+- Never fabricate symbols, columns, env vars, or endpoints — read or search first.
+- When a request conflicts with a rule, STOP and surface the conflict.
+- Every change must be runnable: imports resolved, types valid, lints clean.

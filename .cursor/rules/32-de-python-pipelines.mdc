@@ -1,0 +1,11 @@
+---
+description: Data pipeline Python — chunked I/O, generators, retries, no hardcoded paths.
+globs: **/pipelines/**/*.py,**/etl/**/*.py,**/dags/**/*.py,**/ingest/**/*.py
+alwaysApply: false
+---
+
+- ALWAYS chunk large files. NEVER `pd.read_csv()`/`open().read()` on >~100MB without `chunksize=`, a generator, or PyArrow/Polars streaming.
+- ALWAYS use generators (`yield`) for unbounded or cloud streams; never materialize to a list.
+- Wrap network I/O (HTTP, cloud SDKs, JDBC, Kafka) in exponential backoff with jitter via `tenacity`: `max_attempts>=3`, cap ~30s, retry only transient errors (5xx, throttling, conn reset). NEVER retry 4xx.
+- NEVER hardcode paths (`/Users/`, `/home/`, `C:\Users\`) or bucket/project/account ids. Use env vars (`pydantic-settings`), a typed config, or cloud URIs (`s3://`, `gs://`, `abfs://`).
+- ALWAYS join paths with `pathlib.Path` — never string `+`.

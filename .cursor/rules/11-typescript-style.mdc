@@ -1,0 +1,10 @@
+---
+description: TypeScript typing, legacy bans, error handling.
+globs: **/*.ts,**/*.tsx,**/*.mts,**/*.cts
+alwaysApply: false
+---
+
+- ALWAYS declare explicit return types on exported functions. No implicit `any`; no `unknown` as escape hatch — narrow with a type guard or zod. Prefer `readonly`, `Readonly<T>`, `ReadonlyArray<T>`. NEVER `@ts-ignore`/`@ts-nocheck`/`@ts-expect-error` without reason + ticket.
+- NEVER: `var`, `==`/`!=`, `new Buffer()`, `Function()` constructor, `require()` in ESM, callback-style Node APIs when a Promise variant exists.
+- ALWAYS: `const`/`let`, `===`/`!==`, `Buffer.from(...)`, `import`, `node:fs/promises`, `AbortController`.
+- NEVER `catch (e) {}` or swallow rejections. ALWAYS `catch (e: unknown)`, narrow before use, throw domain `Error` subclasses with `cause:` set.

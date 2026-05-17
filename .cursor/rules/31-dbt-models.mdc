@@ -1,0 +1,12 @@
+---
+description: dbt model conventions — incremental safety, contracts, run windows.
+globs: **/models/**/*.sql,**/models/**/*.yml,**/dbt_project.yml,**/snapshots/**/*.sql
+alwaysApply: false
+---
+
+- NEVER blind `INSERT` for incremental loads — writes MUST be safely re-runnable for the same window.
+- Incremental models MUST set `unique_key` AND `on_schema_change` (`append_new_columns`/`sync_all_columns`).
+- Parameterize the run window via `{{ var('run_date') }}` or `is_incremental()` — never `current_date`/`now()`.
+- Set `materialized` explicitly per model (`view`/`table`/`incremental`/`ephemeral`).
+- Public models MUST declare contracts: `columns` + `tests` (`not_null`, `unique`, `accepted_values`, `relationships`).
+- NEVER `dbt_utils.star` without an `except:` list. Set `access:` + `group:` for cross-project refs.

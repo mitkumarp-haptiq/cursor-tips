@@ -1,0 +1,19 @@
+---
+description: Bash / shell script reliability — strict mode preamble, quoting, traps.
+globs: **/*.sh,**/*.bash,**/*.zsh
+alwaysApply: false
+---
+
+Every script MUST start with:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+```
+
+- ALWAYS quote expansions (`"${VAR}"`, `"$@"`). Prefer `[[ ... ]]` over `[ ... ]`; arithmetic with `(( ... ))`.
+- ALWAYS check required commands up front: `command -v jq >/dev/null || { echo "jq required" >&2; exit 1; }`.
+- ALWAYS use `mktemp` + `trap 'rm -rf "$TMP"' EXIT` for cleanup.
+- NEVER `eval` interpolated user input. NEVER `curl | bash`. NEVER parse `ls` (use globs or `find -print0 | xargs -0`).
+- ALWAYS run `shellcheck` clean (warnings as errors).

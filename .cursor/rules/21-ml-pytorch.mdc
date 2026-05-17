@@ -1,0 +1,15 @@
+---
+description: PyTorch training / eval loop guardrails.
+globs: **/ml/**/*.py,**/training/**/*.py,**/notebooks/**/*.py,**/*.ipynb
+alwaysApply: false
+---
+
+Every custom training loop MUST:
+
+1. Wrap eval/validation in `with torch.no_grad():` AND call `model.eval()`; restore `model.train()` after.
+2. Zero grads with `optimizer.zero_grad(set_to_none=True)`.
+3. Step the LR scheduler at ONE documented cadence (per-step OR per-epoch, never both).
+4. Move tensors with `.to(device, non_blocking=True)`; DataLoader uses `pin_memory=True` on CUDA.
+5. Detach tensors before logging (`.detach().cpu().item()`).
+
+GOOD: `model.eval(); with torch.no_grad(): for x,y in val_loader: ...; model.train()`.

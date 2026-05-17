@@ -1,0 +1,6 @@
+---
+description: OS-aware terminal commands; activate ./.venv before installing or running Python.
+alwaysApply: true
+---
+- When running commands in a terminal, look at the environment to determine what the operating system is, and use this information to run appropriate terminal commands.
+- Always be sure that the Python virtual environment located at ./.venv is activated first.

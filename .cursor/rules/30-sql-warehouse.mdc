@@ -1,0 +1,12 @@
+---
+description: SQL warehouse query hygiene — no SELECT *, partition filters, dedupe.
+globs: **/*.sql
+alwaysApply: false
+---
+
+- NEVER `SELECT *` in production SQL. Only exception: ad-hoc `LIMIT 10` exploration in a scratch notebook — never committed.
+- ALWAYS declare every column explicitly; for wide projections use `dbt_utils.star` with an `except` list.
+- ALWAYS filter on the partition / clustering key on partitioned tables. Unfiltered scans must be flagged in PR.
+- ALWAYS prefer `QUALIFY ROW_NUMBER() OVER (...)` to subquery-join dedupe.
+- NEVER `ORDER BY` in subqueries / CTEs unless paired with `LIMIT`.
+- NEVER use `now()` / `CURRENT_TIMESTAMP` as a window boundary — use the orchestrator's logical execution time.

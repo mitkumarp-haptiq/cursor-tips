@@ -1,0 +1,10 @@
+---
+description: Python typing, legacy bans, error handling.
+globs: **/*.py,**/*.ipynb
+alwaysApply: false
+---
+
+- ALWAYS annotate exported signatures (params + return). Use PEP 604 unions (`int | None`), `TypedDict`, `Protocol`. Prefer immutable data (`frozenset`, `tuple`, `dataclass(frozen=True)`). NEVER `Any` as escape hatch; NEVER `# type: ignore` without reason + ticket.
+- NEVER: `os.system`, `eval`, `exec`, `pickle.load` on untrusted input, `urllib2`, `optparse`, `datetime.utcnow()`, mutable default args, bare `print` in lib code. USE: structured logging, `subprocess.run(check=True)`, `argparse`/`typer`/`click`, `datetime.now(tz=UTC)`.
+- NEVER empty `except:` or catch `BaseException`. Catch narrowest type, log structured context, `raise DomainError(...) from exc`.
+- Comment WHY above non-obvious branches (units, tz, encoding); never restate code. TODO/FIXME require `TODO(@owner, TICKET-123)`.

@@ -1,0 +1,10 @@
+---
+description: Terraform / IaC safety — no open ingress, encryption, version pinning.
+globs: **/*.tf,**/*.tfvars,**/*.hcl
+alwaysApply: false
+---
+
+- NEVER `0.0.0.0/0` / `::/0` on SSH/RDP/DB/admin ports (22, 3389, 3306, 5432, 6379, 27017). Scope ingress to prefix lists, bastion SGs, VPN CIDRs, or IAP; SSH/RDP via SSM Session Manager.
+- ALWAYS encrypt at rest with KMS-backed flags: S3 (SSE-KMS, block-public-access, versioning), RDS/Aurora (`storage_encrypted=true`+`kms_key_id`+IAM auth), EBS (`encrypted=true`), GCS (default KMS + uniform access), Azure Storage (`infrastructure_encryption_enabled=true`).
+- TLS in transit: 443 listeners with modern policy (no TLS1.0/1.1), redirect 80→443, `rds.force_ssl=1` / `require_secure_transport=ON`, `min_tls_version=TLS1_2`.
+- Pin provider versions + module sources to exact tag/SHA. Enable remote state with locking. NEVER commit `*.tfstate*`. NEVER `local-exec` to mutate cloud state.
